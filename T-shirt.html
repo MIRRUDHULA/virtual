@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>saree - Clothing Store</title>
+    <link rel="stylesheet" href="Untitled-1.css">
+    <style>
+        /* Rest of the CSS code */
+        .main-content {
+         
+          background-color: antiquewhite;
+          background-repeat: no-repeat;
+          background-attachment: fixed;
+  background-size: cover;
+  text-align: center;
+  color: #c7319a;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Clothing Store</h1>
+    </header>
+    <div class="container">
+        <div class="sidebar">
+            <h2>Categories</h2>
+            <ul>
+                <li><a href="T-shirt.html">cotton saree</a></li>
+                <li><a href="jeans.html">silk saree</a></li>
+                <li><a href="dresses.html">north indian</a></li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <h2>Cotton saree</h2>
+            <div class="product">
+                <!-- Product details for t-shirts -->
+                <img height='100px' width='200px'src="saree2.jpg" alt="T-Shirt" draggable="true" ondragstart="dragStart(event)">
+                <h3>saree 1</h3>
+                <p>$19.99</p>
+                <button class="view-details">View</button>
+            </div>
+            <div class="product">
+                <img src="saree2.jpg" alt="T-Shirt" draggable="true" ondragstart="dragStart(event)">
+                <h3>saree 2</h3>
+                <p>$24.99</p>
+                <button class="view-details">View</button>
+            </div>
+            <!-- Add more products within the t-shirts category -->
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2023 Clothing Store. All rights reserved.</p>
+    </footer>
+    <script>
+        // Get the elements
+        const viewDetailsButtons = document.querySelectorAll('.view-details');
+
+        // Add event listeners to the buttons
+        viewDetailsButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const productName = this.parentNode.querySelector('h3').innerText;
+                const productPrice = this.parentNode.querySelector('p').innerText;
+                const productImageUrl = this.parentNode.querySelector('img').src;
+
+                // Redirect to the view page with the details
+                window.location.href = `view.html?name=${encodeURIComponent(productName)}&price=${encodeURIComponent(productPrice)}&image=${encodeURIComponent(productImageUrl)}`;
+            });
+        });
+    </script>
+</body>
+</html>

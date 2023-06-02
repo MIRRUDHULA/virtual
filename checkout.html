@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Checkout</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <style>
+        .container{
+            background-color: antiquewhite;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Checkout</h1>
+    </header>
+    <div class="container">
+        <div id="product-details" class="product-details">
+            <!-- Display product details here -->
+            <div id="stock-notification" class="stock-notification"></div>
+        </div>
+        <form id="checkout-form" class="checkout-form">
+            <h2>Checkout</h2>
+            <div class="form-group">
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" name="quantity" required>
+            </div>
+            <div class="form-group">
+                <label for="payment-method">Payment Method:</label>
+                <select id="payment-method" name="payment-method" required>
+                    <option value="">Select Payment Method</option>
+                    <option value="gpay">Google Pay</option>
+                    <option value="netbanking">Net Banking</option>
+                </select>
+            </div>
+            <button type="submit">Proceed to Payment</button>
+        </form>
+        <div id="payment-details" class="payment-details">
+            <!-- Payment details will be displayed here -->
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const productDetailsContainer = document.getElementById('product-details');
+            const stockNotification = document.getElementById('stock-notification');
+            const checkoutForm = document.getElementById('checkout-form');
+            const paymentDetailsContainer = document.getElementById('payment-details');
+
+            // Retrieve stored product details from session storage
+            const productImgSrc = sessionStorage.getItem('productImgSrc');
+            const productName = sessionStorage.getItem('productName');
+            const productPrice = sessionStorage.getItem('productPrice');
+            const isOutOfStock = sessionStorage.getItem('isOutOfStock');
+
+            // Display product details in the checkout page
+            const productDetails = document.createElement('div');
+            productDetails.innerHTML = `
+                <img src="${productImgSrc}" alt="Product Image">
+                <h3>${productName}</h3>
+                <p>${productPrice}</p>
+            `;
+            productDetailsContainer.appendChild(productDetails);
+
+            // Check if the item is out of stock
+            if (isOutOfStock === 'true') {
+                stockNotification.textContent = 'This item is currently out of stock.';
+            }
+
+            // Submit event listener for the checkout form
+            checkoutForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // Retrieve form data
+                const quantity = document.getElementById('quantity').value;
+                const paymentMethod = document.getElementById('payment-method').value;
+
+                // Store form data in session storage
+                sessionStorage.setItem('quantity', quantity);
+                sessionStorage.setItem('paymentMethod', paymentMethod);
+
+                // Redirect to order confirmation page
+                window.location.href = 'confirmation.html';
+            });
+
+            // Display payment details based on selected payment method
+            document.getElementById('payment-method').addEventListener('change', function() {
+                const selectedPaymentMethod = this.value;
+
+                // Clear previous payment details
+                paymentDetailsContainer.innerHTML = '';
+
+                if (selectedPaymentMethod === 'gpay') {
+                    // Display QR code for Google Pay
+                    const qrCodeImage = document.createElement('img');
+                    qrCodeImage.style.width="100px";
+                    qrCodeImage.style.height="100px";
+                    qrCodeImage.src= 'qr.jpg';
+                    qrCodeImage.alt = ' gpay to this num 9999999999';
+                    paymentDetailsContainer.appendChild(qrCodeImage);
+                } else if (selectedPaymentMethod === 'netbanking') {
+                    // Display phone number for net banking
+                    const phoneNumber = document.createElement('p');
+                    phoneNumber.textContent = 'Call 1234567890 for Net Banking Payment';
+                    paymentDetailsContainer.appendChild(phoneNumber);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

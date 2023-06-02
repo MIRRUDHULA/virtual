@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Order Confirmation - Clothing Store</title>
+    <link rel="stylesheet" href="Untitled-1.css">
+</head>
+<body>
+    <header>
+        <h1>Clothing Store</h1>
+    </header>
+    <div class="container">
+        <div class="main-content">
+            <h2>Order Confirmation</h2>
+            <div id="order-details" class="order-details">
+                <!-- Display order details here -->
+            </div>
+            <p>Thank you for your order!</p>
+            <p>An email with your order details will be sent to you shortly.</p>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2023 Clothing Store. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const orderDetailsContainer = document.getElementById('order-details');
+
+            // Retrieve stored product details from session storage
+            const productImgSrc = sessionStorage.getItem('productImgSrc');
+            const productName = sessionStorage.getItem('productName');
+            const productPrice = sessionStorage.getItem('productPrice');
+            const quantity = sessionStorage.getItem('quantity');
+            const paymentMethod = sessionStorage.getItem('paymentMethod');
+
+            // Display order details
+            const orderDetails = document.createElement('div');
+            orderDetails.innerHTML = `
+                <img src="${productImgSrc}" alt="Product Image">
+                <h3>${productName}</h3>
+                <p>Quantity: ${quantity}</p>
+                <p>Payment Method: ${paymentMethod}</p>
+                <p>Total Price: ${productPrice * quantity}</p>
+            `;
+            orderDetailsContainer.appendChild(orderDetails);
+
+            // Clear session storage
+            sessionStorage.clear();
+        });
+    </script>
+</body>
+</html>

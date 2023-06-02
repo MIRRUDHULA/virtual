@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>T-Shirts - Clothing Store</title>
+    <link rel="stylesheet" href="Untitled-1.css">
+    <style>
+        /* Rest of the CSS code */
+        .main-content {
+         
+         background-color: antiquewhite;
+         background-repeat: no-repeat;
+         background-attachment: fixed;
+ background-size: cover;
+ text-align: center;
+ color: #c7319a;
+       }
+
+        /* CSS animation for the dress image */
+        .animate-dress {
+            animation-name: dressAnimation;
+            animation-duration: 1s;
+            animation-timing-function: ease;
+        }
+
+        @keyframes dressAnimation {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Clothing Store</h1>
+    </header>
+    <div class="container">
+        <div class="sidebar">
+            <h2>Categories</h2>
+            <ul>
+                <li><a href="T-shirt.html">cotton saree</a></li>
+                <li><a href="jeans.html">silk saree</a></li>
+                <li><a href="dresses.html">north indian</a></li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <h2>T-Shirts</h2>
+            <div class="product">
+                <!-- Product details for t-shirts -->
+                <img src="saree2.jpg" alt="T-Shirt" draggable="true" ondragstart="dragStart(event)">
+                <h3>saree 1</h3>
+                <p>$19.99</p>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product">
+                <img src="saree2.jpg" alt="T-Shirt" draggable="true" ondragstart="dragStart(event)">
+                <h3>saree 2</h3>
+                <p>$24.99</p>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <!-- Add more products within the t-shirts category -->
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2023 Clothing Store. All rights reserved.</p>
+    </footer>
+    <div id="cameraModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="camera-container">
+                <video id="cameraView" autoplay></video>
+                <button id="takePictureButton">Take Picture</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Get the elements
+        const addtoCartButtons = document.querySelectorAll('.add-to-cart');
+        const cameraModal = document.getElementById('cameraModal');
+        const cameraView = document.getElementById('cameraView');
+        const takePictureButton = document.getElementById('takePictureButton');
+        const closeButton = document.getElementsByClassName('close')[0];
+
+        // Add event listeners to the buttons
+        addtoCartButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                openCameraModal();
+            });
+        });
+
+        // Open the camera modal
+        function openCameraModal() {
+            cameraModal.style.display = 'block';
+            startCamera();
+        }
+
+        // Close the camera modal
+        function closeCameraModal() {
+            cameraModal.style.display = 'none';
+            stopCamera();
+        }
+
+        // Start the camera stream
+        function startCamera() {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function(stream) {
+                    cameraView.srcObject = stream;
+                })
+                .catch(function(error) {
+                    console.error('Error accessing the camera: ', error);
+                });
+        }
+
+        // Stop the camera stream
+        function stopCamera() {
+            const stream = cameraView.srcObject;
+            const tracks = stream.getTracks();
+            tracks.forEach(track => {
+                track.stop();
+            });
+        }
+
+        // Take a picture from the camera
+        function takePicture() {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = cameraView.videoWidth;
+            canvas.height = cameraView.videoHeight;
+            context.drawImage(cameraView, 0, 0, canvas.width, canvas.height);
+            const pictureDataUrl = canvas.toDataURL('image/png');
+            showCapturedImage(pictureDataUrl);
+            applyDressToImage(pictureDataUrl);
+        }
+
+        // Show the captured image in the main content
+        function showCapturedImage(imageUrl) {
+            const mainContent = document.querySelector('.main-content');
+            const capturedImage = document.createElement('img');
+            capturedImage.src = imageUrl;
+            capturedImage.classList.add('captured-image');
+            mainContent.appendChild(capturedImage);
+            closeCameraModal();
+        }
+
+        // Apply the selected dress to the captured image
+        function applyDressToImage(imageUrl) {
+            const capturedImage = document.querySelector('.captured-image');
+            const selectedDress = document.querySelector('.selected-dress');
+            const dress = document.createElement('img');
+            dress.src = selectedDress.src;
+            dress.classList.add('dress-image', 'animate-dress');
+            dress.onload = function() {
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = capturedImage.width;
+                canvas.height = capturedImage.height;
+                context.drawImage(capturedImage, 0, 0);
+                context.drawImage(dress, 0, 0, capturedImage.width, capturedImage.height);
+                capturedImage.src = canvas.toDataURL('image/png');
+            };
+        }
+
+        // Drag and drop functions
+        function dragStart(event) {
+            event.dataTransfer.setData('text/plain', event.target.src);
+        }
+
+        function dragOver(e) {
+            e.preventDefault();
+        }
+
+        function dragEnter(e) {
+            e.preventDefault();
+            this.classList.add('dragover');
+        }
+
+        function dragLeave() {
+            this.classList.remove('dragover');
+        }
+
+        function drop(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+            const dressImage = e.dataTransfer.getData('text/plain');
+            const dress = document.createElement('img');
+            dress.src = dressImage;
+            dress.classList.add('dress-image', 'animate-dress');
+            this.appendChild(dress);
+        }
+
+        // Add event listeners to the camera modal buttons
+        takePictureButton.addEventListener('click', function() {
+            takePicture();
+        });
+
+        closeButton.addEventListener('click', function() {
+            closeCameraModal();
+        });
+
+        window.addEventListener('click', function(event) {
+            if (event.target === cameraModal) {
+                closeCameraModal();
+            }
+        });
+    </script>
+    <style>
+        /* Rest of the CSS code */
+
+        /* CSS for the camera modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            right: 10px;
+            top: 0;
+            cursor: pointer;
+        }
+
+        .camera-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #cameraView {
+            width: 100%;
+            max-height: 400px;
+        }
+
+        #takePictureButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</body>
+</html>

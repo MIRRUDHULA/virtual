@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Virtual Dressing Room</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Virtual Dressing Room</h1>
+    </header>
+    <div class="container">
+        <div class="photo-section">
+            <h2>Upload Your Photo</h2>
+            <div class="photo-upload">
+                <input type="file" id="photo-input" accept="image/*">
+                <label for="photo-input">
+                    <img src="camera-icon.png" alt="Camera Icon">
+                </label>
+            </div>
+            <img src="" alt="User Photo" id="user-photo" class="hidden">
+        </div>
+        <div class="dress-section">
+            <h2>Select a Dress</h2>
+            <div class="dress-options">
+                <img src="saree2.jpg" alt="Dress 1" class="dress">
+                <img src="saree2.jpg" alt="Dress 2" class="dress">
+                <img src="dress2.jpg" alt="Dress 3" class="dress">
+            </div>
+        </div>
+        <div class="preview-section">
+            <h2>Preview</h2>
+            <div class="dress-preview">
+                <img src="" alt="Dress Preview" id="selected-dress" class="hidden">
+            </div>
+        </div>
+        <div class="checkout-section">
+            <h2>Checkout</h2>
+            <form id="checkout-form">
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" name="quantity" min="1" required>
+                <label for="payment-method">Payment Method:</label>
+                <select id="payment-method" name="payment-method" required>
+                    <option value="gpay">Google Pay</option>
+                    <option value="netbanking">Net Banking</option>
+                    <option value="creditcard">Credit Card</option>
+                </select>
+                <button type="submit">Proceed to Checkout</button>
+            </form>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

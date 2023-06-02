@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Product Details - Clothing Store</title>
+    <link rel="stylesheet" href="Untitled-1.css">
+    <style>
+        /* Rest of the CSS code */
+        .container{
+            background-color: antiquewhite;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Clothing Store</h1>
+    </header>
+    <div class="container">
+        <div class="product-details">
+            <img id="productImage" src="" alt="Product Image">
+            <h2 id="productName"></h2>
+            <p id="productPrice"></p>
+            <button id="addToCartButton">Add to Cart</button>
+            <button id="addToCartButton11">Add to Cart11</button>
+            
+        </div>
+        <div class="capture-container" id="captureContainer">
+            <h2>Captured Image</h2>
+            <div id="capturedImageContainer"></div>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2023 Clothing Store. All rights reserved.</p>
+    </footer>
+    <div id="cameraModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="camera-container">
+                <video id="cameraView" autoplay></video>
+                <button id="takePictureButton">Take Picture</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Get the elements
+        const productImage = document.getElementById('productImage');
+        const productName = document.getElementById('productName');
+        const productPrice = document.getElementById('productPrice');
+        const addToCartButton = document.getElementById('addToCartButton');
+        const captureContainer = document.getElementById('captureContainer');
+        const capturedImageContainer = document.getElementById('capturedImageContainer');
+        const cameraModal = document.getElementById('cameraModal');
+        const cameraView = document.getElementById('cameraView');
+        const takePictureButton = document.getElementById('takePictureButton');
+        const closeButton = document.getElementsByClassName('close')[0];
+
+        // Retrieve the product details from the URL query parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const name = urlParams.get('name');
+        const price = urlParams.get('price');
+        const image = urlParams.get('image');
+
+        // Set the product details on the page
+        productImage.src = decodeURIComponent(image);
+        productName.innerText = decodeURIComponent(name);
+        productPrice.innerText = decodeURIComponent(price);
+
+
+        ///
+        addToCartButton11.addEventListener('click', function() {
+            const quantity = parseInt(quantityInput.value);
+            const paymentDetails = paymentInput.value;
+
+            addToCartWithDetails(quantity, paymentDetails);
+        });
+
+
+        // Add event listener to the "Add to Cart" button
+        addToCartButton.addEventListener('click', function() {
+            openCameraModal();
+        });
+
+        // Open the camera modal
+        function openCameraModal() {
+            cameraModal.style.display = 'block';
+            startCamera();
+        }
+
+        // Close the camera modal
+        function closeCameraModal() {
+            cameraModal.style.display = 'none';
+            stopCamera();
+        }
+
+        // Start the camera stream
+        function startCamera() {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function(stream) {
+                    cameraView.srcObject = stream;
+                })
+                .catch(function(error) {
+                    console.error('Error accessing the camera: ', error);
+                });
+        }
+
+        // Stop the camera stream
+        function stopCamera() {
+            const stream = cameraView.srcObject;
+            const tracks = stream.getTracks();
+            tracks.forEach(track => {
+                track.stop();
+            });
+        }
+
+        // Take a picture from the camera
+        function takePicture() {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = cameraView.videoWidth;
+            canvas.height = cameraView.videoHeight;
+            context.drawImage(cameraView, 0, 0, cameraView.videoWidth, cameraView.videoHeight);
+            const pictureDataUrl = canvas.toDataURL('image/jpeg');
+            displayCapturedImage(pictureDataUrl);
+            addToCartWithImage(pictureDataUrl);
+        }
+
+        // Display the captured image
+        function displayCapturedImage(imageUrl) {
+            const capturedImage = new Image();
+            capturedImage.src = imageUrl;
+            capturedImageContainer.appendChild(capturedImage);
+        }
+
+        // Add the product to the cart with the captured image
+       /* function addToCartWithImage(imageUrl) {
+            const product = {
+                name: decodeURIComponent(name),
+                price: decodeURIComponent(price),
+                image: decodeURIComponent(imageUrl)
+            };
+
+            // Perform the desired add to cart functionality here
+            // For example, you can add the product to the cart object or perform an AJAX request to add it to the server-side cart
+
+            // Display a confirmation message
+            alert(`Added "${product.name}" to the cart with the captured image.`);
+        }*/
+          // Add the product to the cart with the captured image
+          function addToCartWithImage(imageUrl) {
+            const product = {
+                name: decodeURIComponent(name),
+                price: decodeURIComponent(price),
+                image: decodeURIComponent(imageUrl)
+            };
+
+            // Perform the desired add to cart functionality here
+            // For example, you can add the product to the cart object or perform an AJAX request to add it to the server-side cart
+
+            // Redirect to the checkout page
+            window.location.href = 'checkout.html';
+        }
+        // Add the product to the cart with the entered details
+        function addToCartWithDetails(quantity, paymentDetails) {
+            const product = {
+                name: decodeURIComponent(name),
+                price: decodeURIComponent(price),
+                quantity: quantity,
+                paymentDetails: paymentDetails
+            };
+
+            // Perform the desired add to cart functionality here
+            // For example, you can add the product to the cart object or perform an AJAX request to add it to the server-side cart
+
+            // Redirect to the checkout page
+            window.location.href = 'checkout.html';
+        }
+
+        // Event listeners for camera modal
+        takePictureButton.addEventListener('click', takePicture);
+        closeButton.addEventListener('click', closeCameraModal);
+        window.addEventListener('click', function(event) {
+            if (event.target == cameraModal) {
+                closeCameraModal();
+            }
+        });
+    </script>
+    <style>
+        /* Rest of the CSS code */
+
+        /* CSS for the camera modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            right: 10px;
+            top: 0;
+            cursor: pointer;
+        }
+
+        .camera-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #cameraView {
+            width: 100%;
+            max-height: 400px;
+        }
+
+        #takePictureButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .capture-container {
+            margin-top: 50px;
+        }
+
+        #capturedImageContainer {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        #capturedImageContainer img {
+            width: 200px;
+            margin: 10px;
+        }
+    </style>
+</body>
+</html>

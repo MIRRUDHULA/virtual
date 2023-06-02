@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>3D Drag and Drop</title>
+  <script src="https://threejs.org/build/three.js"></script>
+  <style>
+    #canvas-container {
+      width: 800px;
+      height: 600px;
+    }
+  </style>
+</head>
+<body>
+  <h1>3D Drag and Drop Example</h1>
+  <div id="canvas-container"></div>
+
+  <script>
+    // Set up the scene, camera, and renderer
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+    // Create a cube
+    const geometry = new THREE.BoxGeometry();
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const cube = new THREE.Mesh(geometry, material);
+    scene.add(cube);
+
+    // Set up the mouse coordinates
+    let mouseX = 0;
+    let mouseY = 0;
+
+    // Set up the drag and drop interaction
+    let isDragging = false;
+    let selectedObject = null;
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mousedown', onMouseDown);
+    document.addEventListener('mouseup', onMouseUp);
+
+    function onMouseMove(event) {
+      event.preventDefault();
+
+      // Calculate the mouse coordinates relative to the canvas
+      const rect = renderer.domElement.getBoundingClientRect();
+      mouseX = (event.clientX - rect.left) / rect.width * 2 - 1;
+      mouseY = -(event.clientY - rect.top) / rect.height * 2 + 1;
+
+      if (isDragging && selectedObject) {
+        // Update the position of the selected object based on mouse movement
+        const vector = new THREE.Vector3(mouseX, mouseY, 0.5);
+        vector.unproject(camera);
+        const dir = vector.sub(camera.position).normalize();
+        const distance = -camera.position.z / dir.z;
+        const pos = camera.position.clone().add(dir.multiplyScalar(distance));
+        selectedObject.position.copy(pos);
+      }
+    }
+
+    function onMouseDown(event) {
+      event.preventDefault();
+
+      // Check if the mouse is over the cube
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2(mouseX, mouseY);
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(scene.children);
+
+      if (intersects.length > 0) {
+        isDragging = true;
+        selectedObject = intersects[0].object;
+      }
+    }
+
+    function onMouseUp(event) {
+      event.preventDefault();
+
+      isDragging = false;
+      selectedObject = null;
+    }
+
+    // Set up the camera position
+    camera.position.z = 5;
+
+    // Render the scene
+    function animate() {
+      requestAnimationFrame(animate);
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</body>
+</html>
